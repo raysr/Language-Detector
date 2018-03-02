@@ -1,76 +1,51 @@
-import os   
-from neurones import *
-from numpy import mean
-
+from sklearn import svm
+from os import listdir
+from os.path import isfile, join
 from string import ascii_lowercase
-
-
-os.chdir("/home/moubarak/Documents/IA/DetectLangue")
-
-naze="false"
-
-while naze:
-
-
-    text=input("Write your text :")
-    frequAct={}
-
-    for c in ascii_lowercase:
-	       frequAct[c]=0
-
-
+import os
+from sklearn.externals import joblib # To save the ia
+def calculate(path):  # To calculate the frequence of each character in the document
+    l=list(open(path,"r").readlines())
+    s=[]
     i=0
-    while(i<len(text)):
-  	     if text[i]!= ' ':
-	           frequAct[text[i].lower()]=frequAct[text[i].lower()]+(1/len(text))
-  	
-  	     i=i+1
+    for c in ascii_lowercase:
+        s[i]=l.count[c]
+        i=i+1
+    return s 
 
-    for b in ascii_lowercase:
-	       print("Frequence ",b,frequAct[b])
-    
+def fitDirectory(mypath): # So the IA can learn from a directory
+    X=[]
+    Y=[]
+    if os.path.exists(os.getcwd()+'dec'):
+        detector= joblib.load('detector.pkl')
+    else:
+        detector=svm.SVC()
+        f=open("dec",'w+')
+    onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+    for f in onlyfiles:
+        Y.append(calculate(f))
+        if(f.startswith("fr")):
+            X.append("fr")
+        if(f.startswith("en")):
+            X.append("en")
+        if(f.startswith("es")):
+            X.append("es")
+    detector.fit(X,Y)
+    joblib.dump(detector, 'detector.pkl')
+def guess(path):
+    detector= joblib.load('detector.pkl')
+    f=open(path,"r")
+    s=list(f.readlines())
+    return detector.predict(s)
+print("\n\n")
+decide=1
+while decide!=0:
+    decide=input(" What do you want ? \n1 - Fit a directory\n2 - Predict\n0 - Quit\n")
+    if decide==1
+        path=input(" Give the full-path to the directory : ")
+        fitDirectory(path)
+        input("Done ! \n")
+    if decide==2
+        path=input(" Give the full-path to the file")
+        input("The file is in : "+guess(path)+"\nPress ENTER to continue..")
 
-    stock=0
-    r=0
-
-
-
-
-
-    with open("frequences","a") as fich:
-        poss=reseau(frequAct)
-        print("The language used is : ")
-        if poss==0.25:
-            print("English")
-        if poss==0.5:
-    	       print("French")
-        if poss==1: 
-    	       print("Spanish")
-
-        stock=poss
-
-        correct=input("True ?")
-        if correct.lower()=="yes":
-    	       print("Well done !")
-
-        else:
-            answer=input("so what was the language ?")
-            if answer.lower()=="english":
-                stock=0.25
-            if answer.lower()=="french":
-                stock=0.5
-            if answer.lower()=="spanish":
-                stock=1
-    
-        if stock==0.25:
-            dom="english"
-        if stock==1:
-            dom="spanish"  
-        if stock==0.5:
-            dom="french"
-        fich.write(dom)
-        fich.write("\n")
-        for a in frequAct:
-            fich.write(str(frequAct[a]))
-            fich.write("\n")
-        fich.close()
