@@ -40,12 +40,12 @@ def guess(path):
 print("\n\n")
 decide=1
 while decide!=0:
-    decide=input(" What do you want ? \n1 - Fit a directory\n2 - Predict\n0 - Quit\n")
-    if decide==1
+    decide=int(input(" What do you want ? \n1 - Fit a directory\n2 - Predict\n0 - Quit\n"))
+    if decide==1:
         path=input(" Give the full-path to the directory : ")
         fitDirectory(path)
         input("Done ! \n")
-    if decide==2
+    if decide==2:
         path=input(" Give the full-path to the file")
         input("The file is in : "+guess(path)+"\nPress ENTER to continue..")
 
